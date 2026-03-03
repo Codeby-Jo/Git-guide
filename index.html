@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Git Version Control Guide — Git & GitHub</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="bg-terminal">
+
+  <!-- Loading Screen -->
+  <div id="loading" class="loading">
+    <div class="loading-card">
+      <div class="git-logo" aria-hidden="true">
+        <!-- simple animated git-like icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M6 4v8a4 4 0 0 0 4 4h4"/>
+          <path d="M18 20v-8a4 4 0 0 0-4-4H10"/>
+          <circle cx="6" cy="4" r="2"/>
+          <circle cx="18" cy="20" r="2"/>
+          <circle cx="18" cy="8" r="2"/>
+          <path d="M10 8h6"/>
+        </svg>
+      </div>
+      <p class="mono muted">initializing repository<span class="cursor-blink">_</span></p>
+      <div class="bar"><div class="bar-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Canvas particles -->
+  <canvas id="particles" aria-hidden="true"></canvas>
+
+  <!-- Cursor Glow -->
+  <div id="cursorGlow" class="cursor-glow" aria-hidden="true"></div>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress">
+    <div id="scrollBar" class="scroll-progress-bar"></div>
+  </div>
+
+  <!-- Top Nav -->
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="#top" class="brand mono" data-ocid="nav-brand">
+        <span class="hash">#</span> git-guide
+      </a>
+      <nav class="nav-links mono">
+        <a href="#what" data-ocid="nav-what">What is Git?</a>
+        <a href="#ops" data-ocid="nav-ops">Operations</a>
+        <a href="#workflow" data-ocid="nav-workflow">Visualizer</a>
+        <a href="#setup" data-ocid="nav-setup">GitHub Setup</a>
+        <a href="#cheatsheet" data-ocid="nav-cheatsheet">Cheatsheet</a>
+        <a href="#terminal" data-ocid="nav-terminal">Mini Terminal</a>
+      </nav>
+      <button id="navToggle" class="nav-toggle mono" data-ocid="nav-toggle">Menu</button>
+    </div>
+    <div id="mobileNav" class="mobile-nav mono">
+      <a href="#what" data-ocid="mnav-what">What is Git?</a>
+      <a href="#ops" data-ocid="mnav-ops">Operations</a>
+      <a href="#workflow" data-ocid="mnav-workflow">Visualizer</a>
+      <a href="#setup" data-ocid="mnav-setup">GitHub Setup</a>
+      <a href="#cheatsheet" data-ocid="mnav-cheatsheet">Cheatsheet</a>
+      <a href="#terminal" data-ocid="mnav-terminal">Mini Terminal</a>
+    </div>
+  </header>
+
+  <main id="top" class="container">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-left">
+          <p class="mono accent-green small"><span class="hash">#</span> guide</p>
+          <h1 class="hero-title">
+            Master Version Control with <span class="accent-blue">Git</span> & <span class="accent-orange">GitHub</span>
+          </h1>
+          <p class="muted hero-sub">
+            Learn repositories, commits, branches, remotes, workflows, and best practices — with interactive visuals and an in-browser terminal.
+          </p>
+
+          <div class="cta-row">
+            <a class="btn btn-green mono" href="#what" data-ocid="cta-start">Start Learning</a>
+            <a class="btn btn-panel mono" href="#terminal" data-ocid="cta-try-terminal">Try Mini Terminal</a>
+          </div>
+
+          <div class="terminal terminal-border">
+            <div class="terminal-top">
+              <span class="dot red"></span>
+              <span class="dot orange"></span>
+              <span class="dot green"></span>
+              <span class="mono tiny muted">terminal — git-session</span>
+            </div>
+            <pre id="heroTerminal" class="terminal-body mono"></pre>
+          </div>
+        </div>
+
+        <div class="hero-right terminal-border card">
+          <p class="mono tiny muted">floating workflow</p>
+
+          <!-- Branch Diagram -->
+          <div class="svg-wrap">
+            <svg viewBox="0 0 640 150" class="branch-svg" aria-hidden="true">
+              <path d="M40 80 H600" stroke="oklch(var(--blue))" stroke-width="3" opacity="0.9"/>
+              <path d="M170 80 C220 80, 240 40, 300 40 H560" stroke="oklch(var(--orange))" stroke-width="3" opacity="0.9"/>
+              <g class="floaty">
+                <circle cx="80" cy="80" r="8" fill="oklch(var(--blue))"/>
+                <circle cx="80" cy="80" r="22" fill="oklch(var(--blue) / 0.12)"/>
+              </g>
+              <g class="floaty delay-1">
+                <circle cx="140" cy="80" r="8" fill="oklch(var(--blue))"/>
+                <circle cx="140" cy="80" r="22" fill="oklch(var(--blue) / 0.12)"/>
+              </g>
+              <g class="floaty delay-2">
+                <circle cx="220" cy="80" r="8" fill="oklch(var(--blue))"/>
+                <circle cx="220" cy="80" r="22" fill="oklch(var(--blue) / 0.12)"/>
+              </g>
+              <g class="floaty delay-3">
+                <circle cx="300" cy="40" r="8" fill="oklch(var(--orange))"/>
+                <circle cx="300" cy="40" r="22" fill="oklch(var(--orange) / 0.12)"/>
+              </g>
+              <g class="floaty delay-4">
+                <circle cx="400" cy="40" r="8" fill="oklch(var(--orange))"/>
+                <circle cx="400" cy="40" r="22" fill="oklch(var(--orange) / 0.12)"/>
+              </g>
+              <g class="floaty delay-5">
+                <circle cx="520" cy="80" r="8" fill="oklch(var(--blue))"/>
+                <circle cx="520" cy="80" r="22" fill="oklch(var(--blue) / 0.12)"/>
+              </g>
+              <text x="50" y="125" fill="oklch(var(--muted))" font-size="12" font-family="JetBrains Mono">main</text>
+              <text x="300" y="26" fill="oklch(var(--muted))" font-size="12" font-family="JetBrains Mono">feature/login</text>
+            </svg>
+          </div>
+
+          <div class="hero-cards">
+            <div class="mini-card hover-glow">
+              <p class="mono tiny accent-blue">tip</p>
+              <p class="muted">Commit early, commit often.</p>
+            </div>
+            <div class="mini-card hover-glow">
+              <p class="mono tiny accent-orange">branch</p>
+              <p class="muted">Feature branches keep main stable.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT IS GIT -->
+    <section id="what" class="section">
+      <div class="section-head">
+        <h2 class="section-title"><span class="hash accent-green">#</span> What is Git?</h2>
+        <p class="muted">Git is a distributed version control system that tracks changes, enables branching, and supports collaboration.</p>
+      </div>
+
+      <div class="grid-4">
+        <!-- Flip cards -->
+        <div class="flip perspective" data-ocid="flip-repo">
+          <div class="flip-inner terminal-border">
+            <div class="flip-face front">
+              <p class="mono tiny accent-green">Repository</p>
+              <p class="muted">A project folder tracked by Git.</p>
+              <p class="mono tiny accent-blue">hover to flip →</p>
+            </div>
+            <div class="flip-face back">
+              <p class="mono tiny accent-orange">Think of it as…</p>
+              <p class="muted">A timeline of changes with files + history.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip perspective" data-ocid="flip-commits">
+          <div class="flip-inner terminal-border">
+            <div class="flip-face front">
+              <p class="mono tiny accent-green">Commits</p>
+              <p class="muted">Snapshots of your code at a point in time.</p>
+              <p class="mono tiny accent-blue">hover to flip →</p>
+            </div>
+            <div class="flip-face back">
+              <p class="mono tiny accent-orange">Why it matters</p>
+              <p class="muted">Revert, compare, and collaborate safely.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip perspective" data-ocid="flip-branches">
+          <div class="flip-inner terminal-border">
+            <div class="flip-face front">
+              <p class="mono tiny accent-green">Branches</p>
+              <p class="muted">Parallel lines of development.</p>
+              <p class="mono tiny accent-blue">hover to flip →</p>
+            </div>
+            <div class="flip-face back">
+              <p class="mono tiny accent-orange">Best practice</p>
+              <p class="muted">Use feature branches to keep main clean.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip perspective" data-ocid="flip-remote">
+          <div class="flip-inner terminal-border">
+            <div class="flip-face front">
+              <p class="mono tiny accent-green">Remote</p>
+              <p class="muted">A shared copy (like GitHub) online.</p>
+              <p class="mono tiny accent-blue">hover to flip →</p>
+            </div>
+            <div class="flip-face back">
+              <p class="mono tiny accent-orange">Collaboration</p>
+              <p class="muted">Push/pull changes and open pull requests.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Counters -->
+      <div class="stats grid-4">
+        <div class="stat hover-glow">
+          <div class="mono stat-num accent-green" data-counter="90" data-suffix="%" data-ocid="stat-devs">0%</div>
+          <div class="muted small">Developers use Git</div>
+        </div>
+        <div class="stat hover-glow">
+          <div class="mono stat-num accent-green" data-counter="3" data-suffix="B+" data-ocid="stat-repos">0B+</div>
+          <div class="muted small">Repositories (illustrative)</div>
+        </div>
+        <div class="stat hover-glow">
+          <div class="mono stat-num accent-green" data-counter="30" data-suffix="+" data-ocid="stat-years">0+</div>
+          <div class="muted small">Years of Git history (approx.)</div>
+        </div>
+        <div class="stat hover-glow">
+          <div class="mono stat-num accent-green" data-counter="100" data-suffix="M+" data-ocid="stat-users">0M+</div>
+          <div class="muted small">GitHub users (approx.)</div>
+        </div>
+      </div>
+
+      <p class="muted small note">
+        *Stats are UI placeholders for learning. Replace with verified stats if needed.
+      </p>
+    </section>
+
+    <!-- OPERATIONS -->
+    <section id="ops" class="section">
+      <div class="section-head">
+        <h2 class="section-title"><span class="hash accent-green">#</span> Core Git Operations</h2>
+        <p class="muted">Use tabs, copy commands, and try them in a simulated terminal modal.</p>
+      </div>
+
+      <div class="tabs mono">
+        <button class="tab active" data-tab="init" data-ocid="tab-init">Initialize</button>
+        <button class="tab" data-tab="commit" data-ocid="tab-commit">Commit</button>
+        <button class="tab" data-tab="pushpull" data-ocid="tab-pushpull">Push/Pull</button>
+        <button class="tab" data-tab="branch" data-ocid="tab-branch">Branch</button>
+        <button class="tab" data-tab="merge" data-ocid="tab-merge">Merge</button>
+      </div>
+
+      <div class="ops-grid">
+        <div class="panel hover-glow">
+          <p class="mono tiny accent-green">concept</p>
+          <h3 id="opTitle" class="panel-title">Initialize a repository</h3>
+          <p id="opDesc" class="muted">Diagram: A folder becomes a Git repo with a hidden .git directory storing history and metadata.</p>
+          <button id="tryBtn" class="btn btn-blue mono" data-ocid="tryit-current">Try it</button>
+        </div>
+
+        <div class="code terminal-border">
+          <div class="code-top">
+            <span class="mono tiny muted">git</span>
+            <button id="copyBtn" class="btn btn-panel mono tiny" data-ocid="copy-current">Copy</button>
+          </div>
+          <pre><code id="opCode" class="mono"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Workflow Visualizer -->
+    <section id="workflow" class="section">
+      <div class="section-head">
+        <h2 class="section-title"><span class="hash accent-green">#</span> Interactive Git Workflow Visualizer</h2>
+        <p class="muted">Play/pause/step through a branching workflow. Hover commits to see tooltips.</p>
+      </div>
+
+      <div class="panel terminal-border">
+        <div class="wf-top">
+          <div>
+            <p class="mono tiny muted">step <span id="wfStep">1</span>/4</p>
+            <p id="wfLabel" class="wf-label">Start on main</p>
+          </div>
+          <div class="wf-controls">
+            <button id="wfPlay" class="btn btn-panel mono" data-ocid="wf-playpause">Play</button>
+            <button id="wfNext" class="btn btn-panel mono" data-ocid="wf-step">Step →</button>
+          </div>
+        </div>
+
+        <div class="wf-svg-wrap">
+          <svg id="wfSvg" viewBox="0 0 640 180" class="wf-svg" aria-label="Workflow visual">
+            <!-- filled by JS -->
+          </svg>
+          <div class="wf-bottom">
+            <p id="wfTip" class="muted">main has initial commits.</p>
+            <p class="mono tiny muted"><span id="wfHover" data-ocid="wf-tooltip">hover a commit</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Setup Guide -->
+    <section id="setup" class="section">
+      <div class="section-head">
+        <h2 class="section-title"><span class="hash accent-green">#</span> Step-by-Step GitHub Setup Guide</h2>
+        <p class="muted">A simple 6-step roadmap with progress indicator.</p>
+      </div>
+
+      <div class="setup-grid">
+        <div class="panel terminal-border">
+          <p class="mono tiny muted">progress</p>
+          <div class="progress">
+            <div id="setupProgress" class="progress-fill"></div>
+          </div>
+
+          <div id="setupList" class="setup-list mono">
+            <!-- JS -->
+          </div>
+        </div>
+
+        <div class="panel hover-glow">
+          <p class="mono tiny accent-green">step <span id="setupNum">1</span></p>
+          <h3 id="setupTitle" class="panel-title">Install Git</h3>
+          <p id="setupDesc" class="muted"></p>
+          <pre id="setupCodeWrap" class="setup-code terminal-border"><code id="setupCode" class="mono"></code></pre>
+
+          <div class="row">
+            <button id="setupPrev" class="btn btn-panel mono" data-ocid="setup-prev">← Prev</button>
+            <button id="setupNext" class="btn btn-blue mono" data-ocid="setup-next">Next →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cheatsheet -->
+    <section id="cheatsheet" class="section">
+      <div class="section-head">
+        <h2 class="section-title"><span class="hash accent-green">#</span> Common Git Commands Cheatsheet</h2>
+        <p class="muted">Search/filter commands. Hover cards to reveal details.</p>
+      </div>
+
+      <div class="cheat-controls">
+        <input id="cheatSearch" class="input mono" placeholder="Search commands…" data-ocid="cheatsheet-search"/>
+        <div class="filters mono" id="cheatFilters">
+          <!-- JS -->
+        </div>
+        <button class="btn btn-orange mono" title="Visual only" data-ocid="cheatsheet-download-pdf">Download PDF</button>
+      </div>
+
+      <div id="cheatGrid" class="cheat-grid">
+        <!-- JS -->
+      </div>
+    </section>
+
+    <!-- Best Practices -->
+    <section id="best" class="section">
+      <div class="section-head">
+        <h2 class="section-title"><span class="hash accent-green">#</span> Git Best Practices</h2>
+        <p class="muted">Do’s and Don’ts: commit messages, branch naming, .gitignore, README habits.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="flip perspective" data-ocid="bp-commit-msg">
+          <div class="flip-inner terminal-border">
+            <div class="flip-face front">
+              <p class="mono tiny accent-green">Do: Clear commit messages</p>
+              <p class="muted">Use imperative mood + explain intent (what + why).</p>
+              <p class="mono tiny accent-blue">hover to flip →</p>
+            </div>
+            <div class="flip-face back">
+              <p class="mono tiny accent-orange">Example</p>
+              <pre class="mono small pre-block">feat(auth): add login validation
+- prevent empty submissions
+- show inline error</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip perspective" data-ocid="bp-branch-naming">
+          <div class="flip-inner terminal-border">
+            <div class="flip-face front">
+              <p class="mono tiny accent-green">Do: Good branch naming</p>
+              <p class="muted">Use prefixes like feature/, fix/, chore/.</p>
+              <p class="mono tiny accent-blue">hover to flip →</p>
+            </div>
+            <div class="flip-face back">
+              <p class="mono tiny accent-orange">Example</p>
+              <pre class="mono small pre-block">feature/profile-page
+fix/navbar-spacing
+chore/update-deps</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip perspective" data-ocid="bp-gitignore">
+          <div class="flip-inner terminal-border">
+            <div class="flip-face front">
+              <p class="mono tiny accent-orange">Don’t: Commit secrets</p>
+              <p class="muted">Add .env, keys, build outputs to .gitignore.</p>
+              <p class="mono tiny accent-blue">hover to flip →</p>
+            </div>
+            <div class="flip-face back">
+              <p class="mono tiny accent-green">Example .gitignore</p>
+              <pre class="mono small pre-block">node_modules/
+dist/
+.env
+.DS_Store</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel hover-glow">
+        <p class="mono tiny accent-green">README checklist</p>
+        <ul class="muted list">
+          <li>Project description + screenshots</li>
+          <li>Install/run steps</li>
+          <li>Features + tech stack</li>
+          <li>License + contribution guide</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Mini Terminal -->
+    <section id="terminal" class="section">
+      <div class="section-head">
+        <h2 class="section-title"><span class="hash accent-green">#</span> Interactive Mini Terminal</h2>
+        <p class="muted">Realistic terminal behavior: command history, tab hints, and a blinking cursor.</p>
+      </div>
+
+      <div class="terminal terminal-border">
+        <div class="terminal-top">
+          <span class="dot red"></span>
+          <span class="dot orange"></span>
+          <span class="dot green"></span>
+          <span class="mono tiny muted">mini-terminal — sandbox</span>
+        </div>
+        <div id="miniOut" class="mini-out mono" aria-live="polite"></div>
+        <div class="mini-in mono">
+          <span class="accent-green">$</span>
+          <input id="miniInput" class="mini-input mono" autocomplete="off" spellcheck="false" data-ocid="mini-input"/>
+          <span class="mini-caret"></span>
+        </div>
+        <div id="miniHint" class="mini-hint mono tiny muted">Tip: type <span class="accent-blue">help</span> or try <span class="accent-blue">git status</span></div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer terminal-border">
+      <p class="mono tiny muted">commit history</p>
+      <div class="commit-list mono">
+        <div class="commit">
+          <span class="hash accent-blue">a1c9f2d</span>
+          <span class="msg">docs: add git workflow visualizer</span>
+          <span class="time muted">just now</span>
+        </div>
+        <div class="commit">
+          <span class="hash accent-blue">5b77e3a</span>
+          <span class="msg">feat: interactive mini terminal</span>
+          <span class="time muted">2m ago</span>
+        </div>
+        <div class="commit">
+          <span class="hash accent-blue">0ff12cd</span>
+          <span class="msg">style: terminal theme + particles background</span>
+          <span class="time muted">10m ago</span>
+        </div>
+      </div>
+      <div class="footer-row">
+        <div class="mono tiny muted">© Git Guide</div>
+        <div class="social mono">
+          <a href="#" data-ocid="social-github">GitHub</a>
+          <a href="#" data-ocid="social-linkedin">LinkedIn</a>
+          <a href="#" data-ocid="social-x">X</a>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Try-it Modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-card terminal-border">
+      <div class="modal-top">
+        <span class="mono tiny muted">simulated terminal</span>
+        <button id="modalClose" class="btn btn-panel mono tiny" data-ocid="modal-close">Close</button>
+      </div>
+      <div class="modal-body mono">
+        <div><span class="accent-green">$</span> <span id="modalCmd"></span></div>
+        <div class="muted">✔ simulated output: command executed successfully.</div>
+        <div class="muted">Tip: Try this in a real terminal inside your repo.</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
